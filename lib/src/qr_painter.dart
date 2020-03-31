@@ -170,13 +170,13 @@ class QrPainter extends CustomPainter {
         FinderPatternPosition.topRight, canvas, paintMetrics);
 
     // DEBUG: draw the inner content boundary
-  //  final paint = Paint()..style = ui.PaintingStyle.stroke;
-  //  paint.strokeWidth = 1;
-  //  paint.color = const Color(0x55222222);
-  //  canvas.drawRect(
-  //      Rect.fromLTWH(paintMetrics.inset, paintMetrics.inset,
-  //          paintMetrics.innerContentSize, paintMetrics.innerContentSize),
-  //      paint);
+    //  final paint = Paint()..style = ui.PaintingStyle.stroke;
+    //  paint.strokeWidth = 1;
+    //  paint.color = const Color(0x55222222);
+    //  canvas.drawRect(
+    //      Rect.fromLTWH(paintMetrics.inset, paintMetrics.inset,
+    //          paintMetrics.innerContentSize, paintMetrics.innerContentSize),
+    //      paint);
 
     double left;
     double top;
@@ -352,32 +352,33 @@ class QrPainter extends CustomPainter {
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.high;
 
-      final paintRound = Paint()
-      ..isAntiAlias = true
-      // ..filterQuality = FilterQuality.high
-      ..style = ui.PaintingStyle.stroke;
-      paintRound.strokeWidth = size.width/10 ;
-      paintRound.color = const Color(0xFFFFFFFF);
     if (style != null) {
       if (style.color != null) {
         paint.colorFilter = ColorFilter.mode(style.color, BlendMode.srcATop);
       }
     }
 
-
     final srcSize =
         Size(embeddedImage.width.toDouble(), embeddedImage.height.toDouble());
     final src = Alignment.center.inscribe(srcSize, Offset.zero & srcSize);
     final dst = Alignment.center.inscribe(size, position & size);
+    if (style != null) {
+      if (style.rounded) {
+        final paintRound = Paint()
+          ..isAntiAlias = true
+          ..style = ui.PaintingStyle.stroke;
+        paintRound.strokeWidth = size.width / 10;
+        paintRound.color = const Color(0xFFFFFFFF);
+        canvas.drawRRect(
+            RRect.fromRectXY(dst, size.width / 10, size.height / 10),
+            paintRound);
+        canvas.clipRRect(
+            RRect.fromRectXY(dst, size.width / 10, size.height / 10),
+            doAntiAlias: true);
+      }
+    }
 
-    canvas.drawRRect(RRect.fromRectXY(
-        dst, size.width/10 , size.height/10 ), paintRound);
-    canvas.clipRRect(RRect.fromRectXY(dst, size.width/10, size.height/10 ) 
-    ,doAntiAlias: true);
-    
     canvas.drawImageRect(embeddedImage, src, dst, paint);
-  
-    
   }
 
   @override
