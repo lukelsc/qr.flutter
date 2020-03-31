@@ -351,16 +351,33 @@ class QrPainter extends CustomPainter {
     final paint = Paint()
       ..isAntiAlias = true
       ..filterQuality = FilterQuality.high;
+
+      final paintRound = Paint()
+      ..isAntiAlias = true
+      // ..filterQuality = FilterQuality.high
+      ..style = ui.PaintingStyle.stroke;
+      paintRound.strokeWidth = size.width/10 ;
+      paintRound.color = const Color(0xFFFFFFFF);
     if (style != null) {
       if (style.color != null) {
         paint.colorFilter = ColorFilter.mode(style.color, BlendMode.srcATop);
       }
     }
+
+
     final srcSize =
         Size(embeddedImage.width.toDouble(), embeddedImage.height.toDouble());
     final src = Alignment.center.inscribe(srcSize, Offset.zero & srcSize);
     final dst = Alignment.center.inscribe(size, position & size);
+
+    canvas.drawRRect(RRect.fromRectXY(
+        dst, size.width/10 , size.height/10 ), paintRound);
+    canvas.clipRRect(RRect.fromRectXY(dst, size.width/10, size.height/10 ) 
+    ,doAntiAlias: true);
+    
     canvas.drawImageRect(embeddedImage, src, dst, paint);
+  
+    
   }
 
   @override
