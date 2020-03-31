@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qr/qr.dart';
 
+import '../qr_flutter.dart';
 import 'errors.dart';
 import 'paint_cache.dart';
 import 'qr_versions.dart';
@@ -102,7 +103,7 @@ class QrPainter extends CustomPainter {
   int _calcVersion;
 
   /// The size of the 'gap' between the pixels
-  final double _gapSize = 0.5;
+  final double _gapSize = 0.0;
 
   /// Cache for all of the [Paint] objects.
   final _paintCache = PaintCache();
@@ -169,16 +170,17 @@ class QrPainter extends CustomPainter {
         FinderPatternPosition.topRight, canvas, paintMetrics);
 
     // DEBUG: draw the inner content boundary
-//    final paint = Paint()..style = ui.PaintingStyle.stroke;
-//    paint.strokeWidth = 1;
-//    paint.color = const Color(0x55222222);
-//    canvas.drawRect(
-//        Rect.fromLTWH(paintMetrics.inset, paintMetrics.inset,
-//            paintMetrics.innerContentSize, paintMetrics.innerContentSize),
-//        paint);
+  //  final paint = Paint()..style = ui.PaintingStyle.stroke;
+  //  paint.strokeWidth = 1;
+  //  paint.color = const Color(0x55222222);
+  //  canvas.drawRect(
+  //      Rect.fromLTWH(paintMetrics.inset, paintMetrics.inset,
+  //          paintMetrics.innerContentSize, paintMetrics.innerContentSize),
+  //      paint);
 
     double left;
     double top;
+    double ratio;
     final gap = !gapless ? _gapSize : 0;
     final pixelPaint = _paintCache.firstPaint(QrCodeElement.codePixel);
     pixelPaint.color = color;
@@ -202,11 +204,17 @@ class QrPainter extends CustomPainter {
           if (gapless && _hasAdjacentVerticalPixel(x, y, _qr.moduleCount)) {
             pixelVTweak = 0.5;
           }
+
+          if (style == QrStyle.circular) {
+            ratio = 0.8;
+          } else if (style == QrStyle.square) {
+            ratio = 1.0;
+          }
           final squareRect = Rect.fromLTWH(
             left,
             top,
-            paintMetrics.pixelSize * 0.8 + pixelHTweak,
-            paintMetrics.pixelSize * 0.8 + pixelVTweak,
+            paintMetrics.pixelSize * ratio + pixelHTweak,
+            paintMetrics.pixelSize * ratio + pixelVTweak,
           );
           if (style == QrStyle.circular) {
             final roundedRect =
