@@ -318,7 +318,7 @@ class QrPainter extends CustomPainter {
     // Paint shapes onto canvas
     if (style == QrStyle.circular) {
       final roundedStrokeRect =
-          RRect.fromRectAndRadius(strokeRect, Radius.circular(100));
+          RRect.fromRectAndRadius(strokeRect, Radius.circular(10));
       canvas.drawRRect(roundedStrokeRect, outerPaint);
       final roundedInnerRect =
           RRect.fromRectAndRadius(innerRect, Radius.circular(100));
